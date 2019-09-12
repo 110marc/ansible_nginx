@@ -1,2 +1,34 @@
 ---
 # tasks file for ansible_nginx
+- name: add repository
+  yum_repository:
+    name: nginx
+    file: nginx-repo
+    baseurl: http://nginx.org/packages/mainline/rhel/$releasever/$basearch
+    gpgcheck: no
+    enabled: yes
+
+- name: install nginx
+  yum:
+    name: nginx
+    state: latest
+    disablerepo: '*'
+    enablerepo: nginx-repo
+    update_cache: yes
+
+- name: start nginx
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+  when: ansible_distribution == "RedHat" and ansible_distribution_major_version <= '6'
+
+- name: start nginx
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes
+  when: ansible_distribution == "RedHat" and ansible_distribution_major_version >= '7'
+
+
+
