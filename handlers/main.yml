@@ -1,2 +1,29 @@
 ---
 # handlers file for ansible_nginx
+
+- name: start nginx RedHat 6
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+  when: ansible_distribution == "RedHat" and ansible_distribution_major_version <= '6'
+
+- name: start nginx RedHat 7
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes
+  when: ansible_distribution == "RedHat" and ansible_distribution_major_version >= '7'
+
+- name: reload nginx RedHat 6
+  service:
+    name: nginx
+    state: reloaded
+  when: ansible_distribution == "RedHat" and ansible_distribution_major_version <= '6'
+
+- name: reload nginx RedHat 7
+  systemd:
+    name: nginx
+    state: reloaded
+  when: ansible_distribution == "RedHat" and ansible_distribution_major_version >= '7'
+

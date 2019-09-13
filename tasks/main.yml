@@ -3,32 +3,23 @@
 - name: add repository
   yum_repository:
     name: nginx
+    description: NGINX Repository
     file: nginx-repo
-    baseurl: http://nginx.org/packages/mainline/rhel/$releasever/$basearch
+    baseurl: http://nginx.org/packages/mainline/rhel/{{ ansible_distribution_major_version }}/$basearch/
     gpgcheck: no
     enabled: yes
 
-- name: install nginx
+- name: install nginx and dependencies
   yum:
-    name: nginx
-    state: latest
-    disablerepo: '*'
-    enablerepo: nginx-repo
-    update_cache: yes
+    name:
+      - nginx-1.9.0
+    state: present
+  notify: start nginx {{ ansible_distribution }} {{ ansible_distribution_major_version }}
 
-- name: start nginx
-  service:
-    name: nginx
-    state: started
-    enabled: yes
-  when: ansible_distribution == "RedHat" and ansible_distribution_major_version <= '6'
-
-- name: start nginx
-  systemd:
-    name: nginx
-    state: started
-    enabled: yes
-  when: ansible_distribution == "RedHat" and ansible_distribution_major_version >= '7'
-
-
+- name: copy webpage
+  template:
+    src: templates/index.html.j2
+    dest: /etc/nginx/html/index.html
+    mode: '0644'
+  notify: reload nginx {{ ansible_distribution }} {{ ansible_distribution_major_version }}
 
