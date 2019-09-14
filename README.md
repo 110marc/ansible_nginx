@@ -20,7 +20,7 @@ No variables.
 Dependencies
 ------------
 
-If it is a new system, it may require `ansible_epel` role to be played prior `ansible_nginx`
+If it is a new system, it may require [`ansible_epel`](https://github.com/110marc/ansible_epel) role to be played prior `ansible_nginx`
 
 Example Playbook
 ----------------
